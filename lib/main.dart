@@ -27,17 +27,28 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: PageView(
-        children: <Widget>[
-          MemoryFirstPage(),
-          MainPage(),
-          AreaFirstPage(),
-          //아래는 임시 페이지 테스트용임
-          LocalNotificationWidget(),
-        ],
-        controller: PageController(initialPage: 1),
-      ),
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (context, snapshot) {
+        if(snapshot.data == null){
+          return ChangeNotifierProvider<JoinOrLogin>.value(
+          value: JoinOrLogin(),
+          child: AuthPage());
+        } else {
+          return Container(
+            child: PageView(
+              children: <Widget>[
+                MemoryFirstPage(),
+                MainPage(),
+                AreaFirstPage(),
+                //아래는 임시 페이지 테스트용임
+                LocalNotificationWidget(),
+              ],
+              controller: PageController(initialPage: 1),
+            ),
+          );
+        }
+      }
     );
   }
 }
