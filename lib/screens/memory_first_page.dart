@@ -17,7 +17,7 @@ class _MemoryFirstPageState extends State<MemoryFirstPage> {
             padding: const EdgeInsets.only(left: 30.0, top: 20.0, bottom: 20.0),
             child: Row(
               children: <Widget>[
-                Image.asset("images/instagram.png"),
+                Image.asset("assets/instagram.png"),
                 Text("  Memory",
                     style: const TextStyle(
                         color: const Color(0xffffffff),

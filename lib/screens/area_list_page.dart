@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-import 'package:aventura/area_page/area_info_page.dart';
+import 'package:aventura/screens/area_info_page.dart';
 
 //todo 추천할 명소들은 context 로 여기 리스트에 넣어주세요.
 const List<String> con = ['colosseum', 'gwanghwamun', 'tajmahal'];
@@ -42,7 +42,7 @@ class _AreaFirstPageState extends State<AreaFirstPage> {
             duration: Duration(seconds: 1),
             opacity: _backgroundOpacity,
             child: Image.asset(
-              "images/building.png",
+              "assets/building.png",
               width: size.width,
               height: size.height,
               fit: BoxFit.fill,
@@ -153,7 +153,7 @@ class _ImageSliderState extends State<ImageSlider> {
                 flex: 3,
                 child: ClipRRect(
                   child: Image.asset(
-                    'images/' + con[i] + '/image1.jpg',
+                    'assets/' + con[i] + '/image1.jpg',
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(50),

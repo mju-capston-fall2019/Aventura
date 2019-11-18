@@ -13,7 +13,7 @@ class _MainPageState extends State<MainPage> {
     return Stack(
       children: <Widget>[
         Image.asset(
-          "images/main.png",
+          "assets/main.png",
           width: size.width,
           height: size.height,
           fit: BoxFit.fill,
@@ -47,7 +47,7 @@ class SettingButton extends StatelessWidget {
     return Container(
         alignment: Alignment(0.9, 0.0),
         child: Image.asset(
-          "images/setting.png",
+          "assets/setting.png",
         ));
   }
 }

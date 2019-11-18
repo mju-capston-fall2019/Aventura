@@ -1,9 +1,13 @@
+import 'package:aventura/data/join_or_login.dart';
+import 'package:aventura/screens/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:aventura/service/local_notification_widget.dart';
-import 'package:aventura/area_page/area_list_page.dart';
-import 'package:aventura/memory_page/memory_first_page.dart';
-import 'package:aventura/main_page.dart';
-import 'package:aventura/area_page/area_info_page.dart';
+import 'package:aventura/services/local_notification_widget.dart';
+import 'package:aventura/screens/area_list_page.dart';
+import 'package:aventura/screens/memory_first_page.dart';
+import 'package:aventura/screens/main_page.dart';
+import 'package:aventura/screens/area_info_page.dart';
+import 'package:provider/provider.dart';
 
 main() {
   runApp(MaterialApp(

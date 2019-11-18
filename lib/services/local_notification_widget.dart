@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:aventura/service/local_notications_helper.dart';
+import 'package:aventura/services/local_notications_helper.dart';
 import 'package:aventura/test_page/second_page.dart';
 
 class LocalNotificationWidget extends StatefulWidget {

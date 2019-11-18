@@ -1,4 +1,4 @@
-package com.example.april_1_local_push_notifications;
+package com.jejudo.aventura;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
