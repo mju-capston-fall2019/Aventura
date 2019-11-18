@@ -79,9 +79,9 @@ class _ImageSliderState extends State<ImageSlider> {
         child: Carousel(
           boxFit: BoxFit.fill,
           images: [
-            AssetImage('images/' + curName + '/image1.jpg'),
-            AssetImage('images/' + curName + '/image2.jpg'),
-            AssetImage('images/' + curName + '/image3.jpg'),
+            AssetImage('assets/' + curName + '/image1.jpg'),
+            AssetImage('assets/' + curName + '/image2.jpg'),
+            AssetImage('assets/' + curName + '/image3.jpg'),
           ],
           autoplay: true,
           indicatorBgPadding: 1.0,

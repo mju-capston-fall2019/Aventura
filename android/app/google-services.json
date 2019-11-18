@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "193028695263",
+    "firebase_url": "https://aventura-36f85.firebaseio.com",
+    "project_id": "aventura-36f85",
+    "storage_bucket": "aventura-36f85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193028695263:android:2519f4fcf1d8c1a4d0b56a",
+        "android_client_info": {
+          "package_name": "com.jejudo.aventura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193028695263-hqj44tof0pa8krliqjukmggol34pvcb8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxy7zc4UOj7EU_xQ5nz-Nh0MW5y_RN_CI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193028695263-hqj44tof0pa8krliqjukmggol34pvcb8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
