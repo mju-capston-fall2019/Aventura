@@ -1,5 +1,6 @@
 import 'package:aventura/models/RecommendationCardModel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RecommendationScreen extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
   AnimationController animationController;
   CurvedAnimation curvedAnimation;
   var cardIndex = 0;
+  var now = new DateTime.now();
 
   @override
   void initState() {
@@ -56,7 +58,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                           padding:
                               const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                           child: Text(
-                            "Friday",
+                            DateFormat('EEEE').format(now).toString(),
                             style: TextStyle(
                                 fontSize: 30.0,
                                 color: Colors.white,
@@ -67,7 +69,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                           padding:
                               const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 12.0),
                           child: Text(
-                            "22 Nov",
+                            DateFormat('MMM d').format(now).toString(),
                             style: TextStyle(
                                 fontSize: 25.0,
                                 color: Color.fromRGBO(255, 255, 255, 0.6),
