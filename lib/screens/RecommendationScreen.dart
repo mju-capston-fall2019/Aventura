@@ -2,6 +2,8 @@ import 'package:aventura/models/RecommendationCardModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'area_info_page.dart';
+
 class RecommendationScreen extends StatefulWidget {
   @override
   _RecommendationScreenState createState() => _RecommendationScreenState();
@@ -98,6 +100,16 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, position) {
                       return GestureDetector(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AreaInfo(
+                                name: cardsList[position].title,
+                              ),
+                            ),
+                          );
+                        },
                         onHorizontalDragEnd: (details) {
                           animationController = AnimationController(
                               vsync: this,
