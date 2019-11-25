@@ -1,17 +1,18 @@
 import 'package:aventura/data/join_or_login.dart';
 import 'package:aventura/screens/login.dart';
+import 'package:aventura/screens/RecommendationScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aventura/services/local_notification_widget.dart';
 import 'package:aventura/screens/area_list_page.dart';
 import 'package:aventura/screens/memory_first_page.dart';
-import 'package:aventura/screens/main_page.dart';
 import 'package:aventura/screens/area_info_page.dart';
 import 'package:provider/provider.dart';
 
 main() {
   runApp(MaterialApp(
     initialRoute: '/',
+    debugShowCheckedModeBanner: false,
     routes: {
       '/': (context) => MyApp(),
       '/info': (context) => AreaInfo(),
@@ -39,7 +40,7 @@ class _MyAppState extends State<MyApp> {
             child: PageView(
               children: <Widget>[
                 MemoryFirstPage(),
-                MainPage(),
+                RecommendationScreen(),
                 AreaFirstPage(),
                 //아래는 임시 페이지 테스트용임
                 LocalNotificationWidget(),
