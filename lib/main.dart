@@ -4,7 +4,6 @@ import 'package:aventura/screens/RecommendationScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aventura/services/local_notification_widget.dart';
-import 'package:aventura/screens/area_list_page.dart';
 import 'package:aventura/screens/memory_first_page.dart';
 import 'package:aventura/screens/area_info_page.dart';
 import 'package:provider/provider.dart';
@@ -41,8 +40,6 @@ class _MyAppState extends State<MyApp> {
               children: <Widget>[
                 MemoryFirstPage(),
                 RecommendationScreen(),
-                AreaFirstPage(),
-                //아래는 임시 페이지 테스트용임
                 LocalNotificationWidget(),
               ],
               controller: PageController(initialPage: 1),
