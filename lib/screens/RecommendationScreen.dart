@@ -1,4 +1,6 @@
-import 'package:aventura/models/RecommendationCardModel.dart';
+import 'package:aventura/models/GeolocationModel.dart';
+import 'package:aventura/models/AttractionModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -11,11 +13,6 @@ class RecommendationScreen extends StatefulWidget {
 
 class _RecommendationScreenState extends State<RecommendationScreen>
     with TickerProviderStateMixin {
-  var cardsList = [
-    RecommendationCardModel('1', "Colosseo", "Historic site", 0.7),
-    RecommendationCardModel('2', "Foro Romano", "Religion", 1.5),
-    RecommendationCardModel('3', "Bocca della Verità", "Art gallery", 6.5)
-  ];
   ScrollController scrollController;
   AnimationController animationController;
   CurvedAnimation curvedAnimation;
@@ -57,8 +54,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                           child: Text(
                             DateFormat('EEEE').format(now).toString(),
                             style: TextStyle(
@@ -68,8 +64,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 12.0),
+                          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 12.0),
                           child: Text(
                             DateFormat('MMM d').format(now).toString(),
                             style: TextStyle(
@@ -93,122 +88,142 @@ class _RecommendationScreenState extends State<RecommendationScreen>
               Container(
                 margin: const EdgeInsets.only(bottom: 30.0),
                 height: 400.0,
-                child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 3,
-                    controller: scrollController,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, position) {
-                      return GestureDetector(
-                        onTap: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AreaInfo(
-                                name: cardsList[position].title,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection("Attractions").snapshots(),
+                  //TODO: Get most three closest attractions from user's current geo-location
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if(snapshot.hasError) return Text("Error: ${snapshot.error}");
+                    if(!snapshot.hasData) return const Text("Loading...");
+                    // TODO: get Pictures of attractions (using documents[index].documentID)
+
+                    return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data.documents.length,
+                        controller: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          var attraction = new AttractionModel(
+                              snapshot.data.documents[index].documentID,
+                              snapshot.data.documents[index]['country'],
+                              snapshot.data.documents[index]['type'],
+                              new GeolocationModel(snapshot.data.documents[index]['geolocationData'].latitude, snapshot.data.documents[index]['geolocationData'].longitude),
+                              snapshot.data.documents[index]['enName'],
+                              snapshot.data.documents[index]['koName'],
+                              snapshot.data.documents[index]['enSummaryDesc'],
+                              snapshot.data.documents[index]['koSummaryDesc']
+                          );
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) =>
+                                      AreaInfo(
+                                        attraction: attraction,
+                                      ),
+                                ),
+                              );
+                            },
+                            onHorizontalDragEnd: (details) {
+                              animationController = AnimationController(
+                                  vsync: this,
+                                  duration: Duration(milliseconds: 500));
+                              curvedAnimation = CurvedAnimation(
+                                  parent: animationController,
+                                  curve: Curves.fastOutSlowIn);
+                              if (details.velocity.pixelsPerSecond.dx > 0) {
+                                if (cardIndex > 0) {
+                                  cardIndex--;
+                                }
+                              } else {
+                                if (cardIndex < snapshot.data.documents.length - 1) {
+                                  cardIndex++;
+                                }
+                              }
+                              setState(() {
+                                scrollController.animateTo(
+                                    (cardIndex) * 256.0,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.fastOutSlowIn);
+                              });
+                              animationController.forward();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10.0)),
+                                child: Container(
+                                  width: 250.0,
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 8.0,
+                                            left: 8.0,
+                                            top: 4.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Chip(
+                                              label: new Text(
+                                                attraction.type,
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors
+                                                  .black38,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                        child: Container(
+                                          child: Image.asset("assets/colosseum/image1.jpg", height: 200, fit: BoxFit.fitHeight),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal: 8.0,
+                                                  vertical: 4.0),
+                                              child: Text(
+                                                //TODO: Create Dynamic distance in card using user's current geo-location
+                                                "1.5 Km from here",
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 18.0),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8.0, vertical: 4.0),
+                                              child: Text(
+                                                attraction.enName,
+                                                style: TextStyle(fontSize: 25.0),
+                                                softWrap: false,
+                                                overflow:TextOverflow.fade
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           );
-                        },
-                        onHorizontalDragEnd: (details) {
-                          animationController = AnimationController(
-                              vsync: this,
-                              duration: Duration(milliseconds: 500));
-                          curvedAnimation = CurvedAnimation(
-                              parent: animationController,
-                              curve: Curves.fastOutSlowIn);
-                          if (details.velocity.pixelsPerSecond.dx > 0) {
-                            if (cardIndex > 0) {
-                              cardIndex--;
-                            }
-                          } else {
-                            if (cardIndex < cardsList.length - 1) {
-                              cardIndex++;
-                            }
-                          }
-                          setState(() {
-                            scrollController.animateTo((cardIndex) * 256.0,
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.fastOutSlowIn);
-                          });
-                          animationController.forward();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                            child: Container(
-                              width: 250.0,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 8.0, left: 8.0, top: 4.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Chip(
-                                          label: new Text(
-                                            cardsList[position].type,
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                          backgroundColor: Colors.black38,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 4.0),
-                                    child: Container(
-                                      height: 200,
-                                      child: FittedBox(
-                                        child: Image.asset(
-                                            "assets/colosseum/image1.jpg"),
-                                        fit: BoxFit.fitHeight,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 4.0),
-                                          child: Text(
-                                            "${cardsList[position].distance} Km from here",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 18.0),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 4.0),
-                                          child: Text(
-                                            "${cardsList[position].title}",
-                                            style: TextStyle(fontSize: 28.0),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
+                        });
+                  }
+                ),
               )
             ],
           ),
