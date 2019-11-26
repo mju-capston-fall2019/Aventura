@@ -23,12 +23,14 @@ class _AreaInfoState extends State<AreaInfo> {
         !_controller.position.outOfRange) {
       //top:max->min bottom:min->max
       setState(() {
-        topFlex = 3;
-        bottomFlex = 4;
+        topFlex = 2;
+        midFlex = 2;
+        bottomFlex = 6;
       });
     } else {
       setState(() {
         topFlex = 3;
+        midFlex = 1;
         bottomFlex = 2;
       });
     }
@@ -48,6 +50,8 @@ class _AreaInfoState extends State<AreaInfo> {
         Expanded(
           flex: topFlex,
           child: Top(
+            name: widget.attraction.koName,
+            country: widget.attraction.country,
             latitude: widget.attraction.geolocationData.latitude,
             longitude: widget.attraction.geolocationData.longitude,
           ),
@@ -88,9 +92,11 @@ class _AreaInfoState extends State<AreaInfo> {
 }
 
 class Top extends StatefulWidget {
+  final String name;
+  final String country;
   final double latitude;
   final double longitude;
-  const Top({this.latitude, this.longitude});
+  const Top({this.name, this.country, this.latitude, this.longitude});
   @override
   _TopState createState() => _TopState();
 }
@@ -145,8 +151,10 @@ class _TopState extends State<Top> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MapWidget(
+                        name: widget.name,
                         latitude: widget.latitude,
                         longitude: widget.longitude,
+                        country: widget.country,
                       ),
                     ),
                   );
@@ -177,6 +185,7 @@ class Mid extends StatelessWidget {
           children: <Widget>[
             Text(
               type,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.teal,
@@ -185,6 +194,7 @@ class Mid extends StatelessWidget {
             ),
             Text(
               name,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 25,
                 letterSpacing: 3.0,
@@ -192,6 +202,7 @@ class Mid extends StatelessWidget {
             ),
             Text(
               country,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.blueGrey,
