@@ -102,42 +102,31 @@ class _TopState extends State<Top> {
     "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F2.jpg?alt=media&token=14e9f217-5931-4bbf-8aa8-0747c2f2b60c",
     "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F3.jpg?alt=media&token=1e9461ad-56e1-494f-8d80-1660be51ded9",
   ];
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    List<Widget> carouselImage() {
+      List<Widget> carouselChildren = [];
+      for (int i = 0; i < 3; i++) {
+        var newChild = Container(
+          child: FadeInImage.assetNetwork(
+            placeholder: "assets/loading.gif",
+            image: url[i],
+            width: size.width,
+            height: size.height,
+            fit: BoxFit.fill,
+          ),
+        );
+        carouselChildren.add(newChild);
+      }
+      return carouselChildren;
+    }
+
     return Stack(
       children: <Widget>[
         Carousel(
-          images: [
-            //todo - get attraction image list
-            Container(
-              child: FadeInImage.assetNetwork(
-                placeholder: "assets/loading.gif",
-                image: url[0],
-                width: size.width,
-                height: size.height,
-                fit: BoxFit.fill,
-              ),
-            ),
-            Container(
-              child: FadeInImage.assetNetwork(
-                placeholder: "assets/loading.gif",
-                image: url[1],
-                width: size.width,
-                height: size.height,
-                fit: BoxFit.fill,
-              ),
-            ),
-            Container(
-              child: FadeInImage.assetNetwork(
-                placeholder: "assets/loading.gif",
-                image: url[2],
-                width: size.width,
-                height: size.height,
-                fit: BoxFit.fill,
-              ),
-            ),
-          ],
+          images: carouselImage(),
           autoplay: true,
           autoplayDuration: Duration(seconds: 3),
           dotBgColor: Colors.transparent,
