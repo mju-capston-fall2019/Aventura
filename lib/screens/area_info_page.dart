@@ -6,7 +6,6 @@ import 'package:carousel_pro/carousel_pro.dart';
 
 class AreaInfo extends StatefulWidget {
   AreaInfo({this.attraction});
-
   final AttractionModel attraction;
 
   @override
@@ -44,17 +43,21 @@ class _AreaInfoState extends State<AreaInfo> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Column(
       children: <Widget>[
         Expanded(
           flex: topFlex,
-          child: Top(),
+          child: Top(
+            latitude: widget.attraction.geolocationData.latitude,
+            longitude: widget.attraction.geolocationData.longitude,
+          ),
         ),
         Expanded(
           flex: midFlex,
-          child: Mid(),
+          child: Mid(
+              type: widget.attraction.type,
+              name: widget.attraction.koName,
+              country: widget.attraction.country),
         ),
         Expanded(
           flex: bottomFlex,
@@ -66,13 +69,12 @@ class _AreaInfoState extends State<AreaInfo> {
                 itemCount: 1,
                 itemBuilder: (context, index) {
                   return Text(
-                    //todo 가져온 정보는 여기에 보여준다.
-                    "스페인 건축물의 절정이라고 평가받는 마드리드의 대표적인 명소로 그 화려함과 규모에 놀랄 만하다. 18세기에 지어진 왕궁은 역사적으로도 기념비적인 건축물이다. 9세기 이슬람의 알카사르(요새)가 있던 자리에 세워져 펠리페 2세가 마드리드로 수도를 옮기면서 왕궁으로 사용했으나, 1734년 크리스마스 때 화재로 미술품과 함께 소실되고 말았다.  이후 그의 제자 사케티가 프란시스코 데 사바티니, 벤투라 로드리케스 등과 함께 1764년 왕궁을 완공하여 현재 모습을 지니게 되었다. 왕궁의 주된 건축 양식은 고전주의 바로크 양식이다. 현재 국왕 일가는 교외의 사르수엘라 궁에 거처하고 있기 때문에 공식 행사가 있을 때 외에는 일반에게 공개된다.",
+                    widget.attraction.koSummaryDesc,
                     style: TextStyle(
                       height: 1.7,
                       letterSpacing: 1.0,
                       fontSize: 20,
-                      //fontFamily: "Wooa",
+                      fontFamily: "Wooa",
                     ),
                   );
                 },
@@ -86,11 +88,20 @@ class _AreaInfoState extends State<AreaInfo> {
 }
 
 class Top extends StatefulWidget {
+  final double latitude;
+  final double longitude;
+  const Top({this.latitude, this.longitude});
   @override
   _TopState createState() => _TopState();
 }
 
 class _TopState extends State<Top> {
+  //todo - get url from FB
+  List<String> url = [
+    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F1.jpg?alt=media&token=31458340-e640-4317-9543-604cf387518f",
+    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F2.jpg?alt=media&token=14e9f217-5931-4bbf-8aa8-0747c2f2b60c",
+    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F3.jpg?alt=media&token=1e9461ad-56e1-494f-8d80-1660be51ded9",
+  ];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -102,8 +113,7 @@ class _TopState extends State<Top> {
             Container(
               child: FadeInImage.assetNetwork(
                 placeholder: "assets/loading.gif",
-                image:
-                    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F1.jpg?alt=media&token=31458340-e640-4317-9543-604cf387518f",
+                image: url[0],
                 width: size.width,
                 height: size.height,
                 fit: BoxFit.fill,
@@ -112,8 +122,7 @@ class _TopState extends State<Top> {
             Container(
               child: FadeInImage.assetNetwork(
                 placeholder: "assets/loading.gif",
-                image:
-                    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F2.jpg?alt=media&token=14e9f217-5931-4bbf-8aa8-0747c2f2b60c",
+                image: url[1],
                 width: size.width,
                 height: size.height,
                 fit: BoxFit.fill,
@@ -122,31 +131,12 @@ class _TopState extends State<Top> {
             Container(
               child: FadeInImage.assetNetwork(
                 placeholder: "assets/loading.gif",
-                image:
-                    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F3.jpg?alt=media&token=1e9461ad-56e1-494f-8d80-1660be51ded9",
+                image: url[2],
                 width: size.width,
                 height: size.height,
                 fit: BoxFit.fill,
               ),
             ),
-//            Image.network(
-//              "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F1.jpg?alt=media&token=31458340-e640-4317-9543-604cf387518f",
-//              width: size.width,
-//              height: size.height,
-//              fit: BoxFit.fill,
-//            ),
-//            Image.network(
-//              "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F2.jpg?alt=media&token=14e9f217-5931-4bbf-8aa8-0747c2f2b60c",
-//              width: size.width,
-//              height: size.height,
-//              fit: BoxFit.fill,
-//            ),
-//            Image.network(
-//              "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/%20GQ1oFM2ZSfZM1RcpxlQP%2F3.jpg?alt=media&token=1e9461ad-56e1-494f-8d80-1660be51ded9",
-//              width: size.width,
-//              height: size.height,
-//              fit: BoxFit.fill,
-//            ),
           ],
           autoplay: true,
           autoplayDuration: Duration(seconds: 3),
@@ -166,8 +156,8 @@ class _TopState extends State<Top> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MapWidget(
-                        latitude: 40.418521,
-                        longitude: -3.714421,
+                        latitude: widget.latitude,
+                        longitude: widget.longitude,
                       ),
                     ),
                   );
@@ -182,7 +172,12 @@ class _TopState extends State<Top> {
   }
 }
 
+//finish
 class Mid extends StatelessWidget {
+  final String type;
+  final String name;
+  final String country;
+  const Mid({this.type, this.name, this.country});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,8 +187,7 @@ class Mid extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              //todo - get attraction type
-              "historical place",
+              type,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.teal,
@@ -201,16 +195,14 @@ class Mid extends StatelessWidget {
               ),
             ),
             Text(
-              //todo - get attraction ko name
-              "마드리드 왕궁",
+              name,
               style: TextStyle(
                 fontSize: 25,
                 letterSpacing: 3.0,
               ),
             ),
             Text(
-              //todo - get attraction country
-              "spain",
+              country,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.blueGrey,
