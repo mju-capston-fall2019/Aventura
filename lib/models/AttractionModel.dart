@@ -9,22 +9,22 @@ class AttractionModel {
   String _koName;
   String _enSummaryDesc;
   String _koSummaryDesc;
+  List<String> _imageUrls;
 
   AttractionModel(this._id, this._country, this._type, this._geolocationData,this._enName, this._koName, this._enSummaryDesc, this._koSummaryDesc);
 
+
   @override
   String toString() {
-    print("id ${this._id}");
-    print(this._country);
-    print(this._type);
-    print(this._geolocationData);
-    print(this._enName);
-    print(this._koName);
-    print(this._enSummaryDesc);
-    print(this._koSummaryDesc);
-    return super.toString();
+    return 'AttractionModel{_id: $_id, _country: $_country, _type: $_type, _geolocationData: $_geolocationData, _enName: $_enName, _koName: $_koName, _enSummaryDesc: $_enSummaryDesc, _koSummaryDesc: $_koSummaryDesc, _imageUrls: $_imageUrls}';
   }
 
+
+  set imageUrls(List<String> value) {
+    _imageUrls = value;
+  }
+
+  List<String> get imageUrls => _imageUrls;
 
   String get id => _id;
 
