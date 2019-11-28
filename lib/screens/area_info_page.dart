@@ -16,7 +16,7 @@ class _AreaInfoState extends State<AreaInfo> {
   ScrollController _controller;
   int topFlex = 3;
   int midFlex = 1;
-  int bottomFlex = 2;
+  int bottomFlex = 3;
 
   _scrollListener() {
     if (_controller.offset != _controller.position.minScrollExtent &&
@@ -45,44 +45,68 @@ class _AreaInfoState extends State<AreaInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    Size size = MediaQuery.of(context).size;
+    return Stack(
       children: <Widget>[
-        Expanded(
-          flex: topFlex,
-          child: Top(
-            name: widget.attraction.koName,
-            country: widget.attraction.country,
-            latitude: widget.attraction.geolocationData.latitude,
-            longitude: widget.attraction.geolocationData.longitude,
-          ),
+        Container(
+          width: size.width,
+          height: size.height,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                Color.fromRGBO(186, 104, 200, 1),
+                Color.fromRGBO(74, 22, 140, 1)
+              ])),
         ),
-        Expanded(
-          flex: midFlex,
-          child: Mid(
-              type: widget.attraction.type,
-              name: widget.attraction.koName,
-              country: widget.attraction.country),
-        ),
-        Expanded(
-          flex: bottomFlex,
-          child: Scaffold(
-            body: Container(
-              margin: const EdgeInsets.only(right: 30.0, left: 30.0),
-              child: ListView.builder(
-                controller: _controller,
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  return Text(
-                    widget.attraction.koSummaryDesc,
-                    style: TextStyle(
-                      height: 1.7,
-                      letterSpacing: 1.0,
-                      fontSize: 20,
-                      fontFamily: "Wooa",
+        Container(
+          margin: EdgeInsets.all(20),
+          child: ClipRRect(
+            borderRadius: new BorderRadius.circular(20.0),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: topFlex,
+                  child: Top(
+                    name: widget.attraction.koName,
+                    country: widget.attraction.country,
+                    latitude: widget.attraction.geolocationData.latitude,
+                    longitude: widget.attraction.geolocationData.longitude,
+                  ),
+                ),
+                Expanded(
+                  flex: midFlex,
+                  child: Mid(
+                      type: widget.attraction.type,
+                      name: widget.attraction.koName,
+                      country: widget.attraction.country),
+                ),
+                Expanded(
+                  flex: bottomFlex,
+                  child: Scaffold(
+                    body: Container(
+                      margin: const EdgeInsets.only(
+                          right: 30.0, left: 30.0, top: 0),
+                      child: ListView.builder(
+                        controller: _controller,
+                        itemCount: 1,
+                        itemBuilder: (context, index) {
+                          return Text(
+                            widget.attraction.koSummaryDesc,
+                            style: TextStyle(
+                              height: 1.7,
+                              letterSpacing: 1.0,
+                              fontSize: 20,
+                              fontFamily: "Wooa",
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -169,7 +193,6 @@ class _TopState extends State<Top> {
   }
 }
 
-//finish
 class Mid extends StatelessWidget {
   final String type;
   final String name;
