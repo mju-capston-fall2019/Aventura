@@ -40,22 +40,30 @@ class RecommendationCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets
-                  .symmetric(
-                  horizontal: 8.0,
-                  vertical: 4.0),
-              child: Container(
-                  child: attraction.imageUrls == null ? Text("") : CachedNetworkImage(
-                      imageUrl: attraction.imageUrls[0],
-                      placeholder: (context, url) => new CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => new Icon(Icons.error),
-                      height: 180,
-                      fit: BoxFit.fitHeight,
-                  )
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
+                          .symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0),
+                      child: Center(
+                        child: Container(
+                            child: widget.attraction.imageUrls == null
+                                ? Image.asset(
+                                'assets/no-image.png', height: 180,
+                                fit: BoxFit.fitHeight)
+                                : CachedNetworkImage(
+                              imageUrl: widget.attraction.imageUrls[0],
+                              placeholder: (context,
+                                  url) => new CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                              new Icon(Icons.error),
+                              height: 180,
+                              fit: BoxFit.fitHeight,
+                            )
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
                 children: <Widget>[
