@@ -1,6 +1,6 @@
 class GeolocationModel {
-  double latitude;
-  double longitude;
+  final double latitude;
+  final double longitude;
 
   GeolocationModel(this.latitude, this.longitude);
   @override

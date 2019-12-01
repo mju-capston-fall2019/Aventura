@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:aventura/screens/forget_pw.dart';
 
 class AuthPage extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // unique 한 id 를 주는 것. form 에 id를 주고 상태변화를 가져오려고 사용
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  static final TextEditingController _emailController = TextEditingController();
+  static final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +127,7 @@ class AuthPage extends StatelessWidget {
                     if (_formKey.currentState.validate()) {
                       value.isJoin ? _register(context) : _login(context);
                     }
+                    FocusScope.of(context).unfocus(); // hide keyboard
                   }),
             )),
       );

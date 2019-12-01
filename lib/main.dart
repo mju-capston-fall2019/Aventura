@@ -1,6 +1,8 @@
 import 'package:aventura/data/join_or_login.dart';
+import 'package:aventura/models/GeolocationModel.dart';
 import 'package:aventura/screens/login.dart';
 import 'package:aventura/screens/RecommendationScreen.dart';
+import 'package:aventura/services/location_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aventura/services/local_notification_widget.dart';
@@ -36,13 +38,16 @@ class _MyAppState extends State<MyApp> {
           child: AuthPage());
         } else {
           return Container(
-            child: PageView(
-              children: <Widget>[
-                MemoryFirstPage(),
-                RecommendationScreen(),
-                LocalNotificationWidget(),
-              ],
-              controller: PageController(initialPage: 1),
+            child: StreamProvider<GeolocationModel>(
+              builder: (context) => LocationService().locationStream,
+              child: PageView(
+                children: <Widget>[
+                  MemoryFirstPage(),
+                  RecommendationScreen(),
+                  LocalNotificationWidget(),
+                ],
+                controller: PageController(initialPage: 1),
+              ),
             ),
           );
         }
