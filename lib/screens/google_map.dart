@@ -1,39 +1,52 @@
 import 'dart:async';
+import 'package:aventura/models/AttractionModel.dart';
+import 'package:aventura/models/GeolocationModel.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapWidget extends StatefulWidget {
-  final String name;
-  final String country;
-  final double latitude;
-  final double longitude;
+  final AttractionModel attraction;
+  final GeolocationModel myLocation;
 
-  //todo - change my location
-  final double myLatitude = 40.416950;
-  final double myLongitude = -3.615267;
-
-  MapWidget({this.name, this.country, this.latitude, this.longitude});
+  MapWidget({this.attraction, this.myLocation});
 
   @override
   State<MapWidget> createState() => MapWidgetState();
 }
 
 class MapWidgetState extends State<MapWidget> {
+  int index=1;
+  String _distance='';
   Completer<GoogleMapController> _controller = Completer();
+
+  @override
+  void initState() {
+    Geolocator().distanceBetween(
+      widget.myLocation.latitude,
+      widget.myLocation.longitude,
+      widget.attraction.geolocationData.latitude,
+      widget.attraction.geolocationData.longitude)
+      .then((distance) {
+        setState(() {
+          _distance = (distance * 0.001).toStringAsFixed(1); // meter -> km
+        });
+      });
+  }
 
   _getAttractionMarker() {
     return Marker(
       markerId: MarkerId("attracrion"),
-      position: LatLng(widget.latitude, widget.longitude),
-      infoWindow: InfoWindow(title: widget.name),
+      position: LatLng(widget.attraction.geolocationData.latitude, widget.attraction.geolocationData.longitude),
+      infoWindow: InfoWindow(title: widget.attraction.enName),
     );
   }
 
   _getMyMarker() {
     return Marker(
       markerId: MarkerId("my"),
-      position: LatLng(widget.myLatitude, widget.myLongitude),
+      position: LatLng(widget.myLocation.latitude, widget.myLocation.longitude),
       infoWindow: InfoWindow(title: "my location"),
       icon: BitmapDescriptor.defaultMarkerWithHue(
         BitmapDescriptor.hueOrange,
@@ -42,11 +55,10 @@ class MapWidgetState extends State<MapWidget> {
   }
 
   _onTap(int index) {
+    setState(() {
+      this.index = index;
+    });
     switch (index) {
-      //backbutton
-//      case 0:
-//        Navigator.pop(context);
-//        break;
       case 0:
         _goToTMyLocation();
         break;
@@ -55,7 +67,7 @@ class MapWidgetState extends State<MapWidget> {
         break;
       case 2:
         String url =
-            "https://www.google.com/maps/dir/?api=1&origin=${widget.latitude},${widget.longitude}&destination=${widget.myLatitude},${widget.myLongitude}&travelmode=driving&dir_action=navigate";
+            "https://www.google.com/maps/dir/?api=1&origin=${widget.attraction.geolocationData.latitude},${widget.attraction.geolocationData.longitude}&destination=${widget.myLocation.latitude},${widget.myLocation.longitude}&travelmode=driving&dir_action=navigate";
         _launchURL(url);
         break;
       default:
@@ -72,14 +84,14 @@ class MapWidgetState extends State<MapWidget> {
 
   _getAttractionCameraPosition() {
     return CameraPosition(
-      target: LatLng(widget.latitude, widget.longitude),
+      target: LatLng(widget.attraction.geolocationData.latitude, widget.attraction.geolocationData.longitude),
       zoom: 15.5,
     );
   }
 
   _getMyCameraPosition() {
     return CameraPosition(
-      target: LatLng(widget.myLatitude, widget.myLongitude),
+      target: LatLng(widget.myLocation.latitude, widget.myLocation.longitude),
       zoom: 15.5,
     );
   }
@@ -132,8 +144,7 @@ class MapWidgetState extends State<MapWidget> {
                 children: <Widget>[
                   ClipRRect(
                     child: Image.network(
-                      //todo  - change img
-                      "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/C1gT4r367U5PYYVGxUYH%2F1.jpg?alt=media&token=b5fe592f-7260-4f32-849a-8c02d259ed8c",
+                      widget.attraction.imageUrls[0],
                       width: 130,
                       height: 150,
                       fit: BoxFit.fill,
@@ -146,7 +157,7 @@ class MapWidgetState extends State<MapWidget> {
                         margin: const EdgeInsets.only(top: 20),
                         width: 200,
                         child: Text(
-                          widget.name,
+                          widget.attraction.koName,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.black,
@@ -159,7 +170,7 @@ class MapWidgetState extends State<MapWidget> {
                         margin: const EdgeInsets.only(top: 10),
                         width: 200,
                         child: Text(
-                          widget.country,
+                          widget.attraction.country,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.teal,
@@ -172,9 +183,8 @@ class MapWidgetState extends State<MapWidget> {
                         margin: const EdgeInsets.only(top: 20),
                         width: 200,
                         child: Text(
-                          "1.5km",
+                          _distance+' km',
                           style: TextStyle(
-                            color: Colors.red,
                             fontSize: 30,
                           ),
                           textAlign: TextAlign.center,
@@ -189,28 +199,24 @@ class MapWidgetState extends State<MapWidget> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          //backbutton
-//          BottomNavigationBarItem(
-//            icon: Icon(Icons.navigate_before),
-//            title: Text(''),
-//          ),
+        currentIndex: index,
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.accessibility),
-            title: Text(''),
+            title: index==0 ? Text('∙') : Text(''),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance),
-            title: Text(''),
+            title: index==1 ? Text('∙') : Text(''),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.directions_bus),
-            title: Text(''),
+            title: index==2 ? Text('∙') : Text(''),
           ),
         ],
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.deepOrangeAccent,
-        unselectedItemColor: Colors.deepOrangeAccent,
+        selectedItemColor: Colors.deepPurpleAccent,
+        unselectedItemColor: Colors.grey,
         onTap: _onTap,
       ),
     );

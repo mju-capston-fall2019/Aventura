@@ -1,12 +1,17 @@
 import 'package:aventura/models/AttractionModel.dart';
+import 'package:aventura/models/GeolocationModel.dart';
 import 'package:aventura/screens/google_map.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:flutter/widgets.dart';
 
 class AreaInfo extends StatefulWidget {
-  AreaInfo({this.attraction});
   final AttractionModel attraction;
+  final GeolocationModel userLocation;
+
+  AreaInfo({this.attraction, this.userLocation});
 
   @override
   _AreaInfoState createState() => _AreaInfoState();
@@ -52,63 +57,53 @@ class _AreaInfoState extends State<AreaInfo> {
           width: size.width,
           height: size.height,
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                Color.fromRGBO(186, 104, 200, 1),
-                Color.fromRGBO(74, 22, 140, 1)
-              ])),
+            color: Colors.white,
+          ),
         ),
         Container(
-          margin: EdgeInsets.all(20),
-          child: ClipRRect(
-            borderRadius: new BorderRadius.circular(20.0),
-            child: Column(
+          child: Column(
               children: <Widget>[
-                Expanded(
-                  flex: topFlex,
+                Container(
+                  height:size.height * 0.4,
                   child: Top(
-                    name: widget.attraction.koName,
-                    country: widget.attraction.country,
-                    latitude: widget.attraction.geolocationData.latitude,
-                    longitude: widget.attraction.geolocationData.longitude,
+                    attraction: widget.attraction,
+                    myLocation: widget.userLocation,
                   ),
                 ),
-                Expanded(
-                  flex: midFlex,
+                Container(
+                  height: 100,
                   child: Mid(
                       type: widget.attraction.type,
                       name: widget.attraction.koName,
                       country: widget.attraction.country),
                 ),
                 Expanded(
-                  flex: bottomFlex,
                   child: Scaffold(
                     body: Container(
                       margin: const EdgeInsets.only(
-                          right: 30.0, left: 30.0, top: 0),
-                      child: ListView.builder(
-                        controller: _controller,
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return Text(
-                            widget.attraction.koSummaryDesc,
-                            style: TextStyle(
-                              height: 1.7,
-                              letterSpacing: 1.0,
-                              fontSize: 20,
-                              fontFamily: "Wooa",
-                            ),
-                          );
-                        },
+                          right: 30.0, left: 30.0, top: 20.0),
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child: ListView.builder(
+                          controller: _controller,
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return Text(
+                              widget.attraction.koSummaryDesc,
+                              style: TextStyle(
+                                height: 1.6,
+                                fontSize: 18,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-          ),
         ),
       ],
     );
@@ -116,23 +111,15 @@ class _AreaInfoState extends State<AreaInfo> {
 }
 
 class Top extends StatefulWidget {
-  final String name;
-  final String country;
-  final double latitude;
-  final double longitude;
-  const Top({this.name, this.country, this.latitude, this.longitude});
+  final AttractionModel attraction;
+  final GeolocationModel myLocation;
+
+  const Top({this.attraction, this.myLocation});
   @override
   _TopState createState() => _TopState();
 }
 
 class _TopState extends State<Top> {
-  //todo - get url from FB
-  List<String> url = [
-    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/C1gT4r367U5PYYVGxUYH%2F1.jpg?alt=media&token=b5fe592f-7260-4f32-849a-8c02d259ed8c",
-    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/C1gT4r367U5PYYVGxUYH%2F1.jpg?alt=media&token=b5fe592f-7260-4f32-849a-8c02d259ed8c",
-    "https://firebasestorage.googleapis.com/v0/b/aventura-36f85.appspot.com/o/C1gT4r367U5PYYVGxUYH%2F1.jpg?alt=media&token=b5fe592f-7260-4f32-849a-8c02d259ed8c",
-  ];
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -140,12 +127,13 @@ class _TopState extends State<Top> {
       List<Widget> carouselChildren = [];
       for (int i = 0; i < 3; i++) {
         var newChild = Container(
-          child: FadeInImage.assetNetwork(
-            placeholder: "assets/loading.gif",
-            image: url[i],
-            width: size.width,
+          child: CachedNetworkImage(
+            imageUrl: widget.attraction.imageUrls[i],
+            placeholder: (context, url) => Image.asset("assets/loading.gif", height: size.height * 0.4, fit: BoxFit.fitWidth),
+            errorWidget: (context, url, error) => new Icon(Icons.error),
             height: size.height,
-            fit: BoxFit.fill,
+            width: size.width ,
+            fit: BoxFit.cover
           ),
         );
         carouselChildren.add(newChild);
@@ -175,10 +163,8 @@ class _TopState extends State<Top> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MapWidget(
-                        name: widget.name,
-                        latitude: widget.latitude,
-                        longitude: widget.longitude,
-                        country: widget.country,
+                        attraction: widget.attraction,
+                        myLocation: widget.myLocation,
                       ),
                     ),
                   );
@@ -202,7 +188,7 @@ class Mid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        alignment: Alignment(0.0, 0.0),
+        alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
