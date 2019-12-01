@@ -63,7 +63,7 @@ class _RecommendationCardState extends State<RecommendationCard> {
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
                 child: Center(
                   child: Container(
                       child: widget.attraction.imageUrls == null
@@ -71,8 +71,10 @@ class _RecommendationCardState extends State<RecommendationCard> {
                               height: 180, fit: BoxFit.fitHeight)
                           : CachedNetworkImage(
                               imageUrl: widget.attraction.imageUrls[0],
-                              placeholder: (context, url) =>
-                                  new CircularProgressIndicator(),
+                              placeholder: (context, url) => Image.asset(
+                                  "assets/loading.gif",
+                                  height: 180,
+                                  fit: BoxFit.cover),
                               errorWidget: (context, url, error) =>
                                   new Icon(Icons.error),
                               height: 180,
@@ -96,7 +98,7 @@ class _RecommendationCardState extends State<RecommendationCard> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8.0, vertical: 4.0),
-                      child: Text(widget.attraction.enName,
+                      child: Text(widget.attraction.koName,
                           style: TextStyle(fontSize: 25.0),
                           softWrap: false,
                           overflow: TextOverflow.fade),

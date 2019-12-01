@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -22,11 +23,12 @@ class _RecommendationScreenState extends State<RecommendationScreen>
   CurvedAnimation curvedAnimation;
   var cardIndex = 0;
   var now = new DateTime.now();
+  String userName = "Hey";
+  int numOfNearAttractions = 0;
 
   Future<List<String>> getThumbnailImageUrl(String id) async {
     try {
-      final StorageReference storageReference =
-          FirebaseStorage().ref().child(id);
+      final StorageReference storageReference = FirebaseStorage().ref().child(id);
       List<String> urls = new List(3);
       urls[0] = await storageReference.child('1.jpg').getDownloadURL();
       urls[1] = await storageReference.child('2.jpg').getDownloadURL();
@@ -43,6 +45,9 @@ class _RecommendationScreenState extends State<RecommendationScreen>
   void initState() {
     super.initState();
     scrollController = new ScrollController();
+    FirebaseAuth.instance.currentUser().then((user) {
+      userName = user.email.split('@')[0];
+    });
   }
 
   @override
@@ -120,7 +125,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                             ),
                           ),
                           Text(
-                            "${FirebaseAuth.instance.currentUser().toString()} kangsan, You have 3 places to go!\n",
+                            "$userName, You have $numOfNearAttractions places to go!\n",
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Color.fromRGBO(255, 255, 255, 0.6),
@@ -145,13 +150,13 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                           if (snapshot.hasError)
                             return Text("Error: ${snapshot.error}");
                           if (!snapshot.hasData) return const Text("");
-                          // TODO: get Pictures of attractions (using documents[index].documentID)
                           return ListView.builder(
                               physics: NeverScrollableScrollPhysics(),
                               itemCount: snapshot.data.documents.length,
                               controller: scrollController,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
+                                numOfNearAttractions = snapshot.data.documents.length;
                                 var attraction = new AttractionModel(
                                     snapshot.data.documents[index].documentID,
                                     snapshot.data.documents[index]['country'],
@@ -177,7 +182,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                                         AsyncSnapshot urlSnapshot) {
                                       if (urlSnapshot.hasError)
                                         return new Center(
-                                            child: Text("somethin's wrong"));
+                                            child: Text("something's wrong"));
                                       else {
                                         attraction.imageUrls = urlSnapshot.data;
                                         return new GestureDetector(
@@ -187,6 +192,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
                                               MaterialPageRoute(
                                                 builder: (context) => AreaInfo(
                                                   attraction: attraction,
+                                                  userLocation: userLocation,
                                                 ),
                                               ),
                                             );
