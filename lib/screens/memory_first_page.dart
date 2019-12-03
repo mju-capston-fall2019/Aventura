@@ -1,4 +1,6 @@
+import 'package:aventura/screens/memory_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class MemoryFirstPage extends StatefulWidget {
   @override
@@ -15,37 +17,71 @@ class _MemoryFirstPageState extends State<MemoryFirstPage> {
   ];
 
   final List<String> _listViewText = [
-    "여기는 어디일까요1",
-    "여기는 어디일까요2",
-    "여기는 어디일까요3",
-    "여기는 어디일까요4",
-    "여기는 어디일까요5",
+    "버킹엄 궁전",
+    "몽마르트",
+    "홍콩 스카이라인",
+    "에펠탑",
+    "파타야 아트 인 파라다이스",
   ];
+
+  Future<List<String>> getThumbnailImageUrl(String id) async {
+    try {
+      final StorageReference storageReference =
+          FirebaseStorage().ref().child(id);
+      List<String> urls = new List(3);
+      urls[0] = await storageReference.child('1.jpg').getDownloadURL();
+      urls[1] = await storageReference.child('2.jpg').getDownloadURL();
+      urls[2] = await storageReference.child('3.jpg').getDownloadURL();
+      return urls;
+    } catch (e) {
+      print('Error in getThumbnailImageUrl!\n');
+      print(e);
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: new PreferredSize(
-        preferredSize: new Size(MediaQuery.of(context).size.width, 130.0),
+        preferredSize: new Size(MediaQuery.of(context).size.width, 160.0),
         child: new Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                Color.fromRGBO(186, 104, 200, 1),
+                Color.fromRGBO(74, 22, 140, 1)
+              ])),
           padding: new EdgeInsets.only(top: MediaQuery.of(context).padding.top),
           child: Row(
             children: <Widget>[
               Container(
+                padding: EdgeInsets.only(bottom: 10, top: 10),
                 width: size.width / 2,
                 child: Text(
                   "스토리",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.blue, fontSize: 20),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               Container(
+                padding: EdgeInsets.only(bottom: 10, top: 10),
                 width: size.width / 2,
                 child: Text(
                   "사진",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey, fontSize: 20),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -60,34 +96,49 @@ class _MemoryFirstPageState extends State<MemoryFirstPage> {
           return ListTile(
             dense: true,
             contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-            title: Stack(
-              children: <Widget>[
-                Container(
-                  width: size.width,
-                  height: 170,
-                  child: Image.network(
-                    _listViewImageUrl[index],
-                    fit: BoxFit.fill,
+            title: GestureDetector(
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    width: size.width,
+                    height: 170,
+                    child: Image.network(
+                      _listViewImageUrl[index],
+                      fit: BoxFit.fill,
+                    ),
                   ),
-                ),
-                Container(
-                  width: size.width,
-                  height: 170,
-                  child: Center(
-                    child: Text(
-                      _listViewText[index],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                  Container(
+                    width: size.width,
+                    height: 170,
+                    child: Center(
+                      child: Text(
+                        _listViewText[index],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MemoryImageList(),
+                  ),
+                );
+              },
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: null,
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
     );
   }
