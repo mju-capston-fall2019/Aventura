@@ -130,7 +130,7 @@ class _TopState extends State<Top> {
           child: CachedNetworkImage(
             imageUrl: widget.attraction.imageUrls[i],
             placeholder: (context, url) => Image.asset("assets/loading.gif", height: size.height * 0.4, fit: BoxFit.fitWidth),
-            errorWidget: (context, url, error) => new Icon(Icons.error),
+            errorWidget: (context, url, error) => Image.asset("assets/no-image.png", fit: BoxFit.fitHeight),
             height: size.height,
             width: size.width ,
             fit: BoxFit.cover

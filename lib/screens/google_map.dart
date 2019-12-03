@@ -67,7 +67,7 @@ class MapWidgetState extends State<MapWidget> {
         break;
       case 2:
         String url =
-            "https://www.google.com/maps/dir/?api=1&origin=${widget.attraction.geolocationData.latitude},${widget.attraction.geolocationData.longitude}&destination=${widget.myLocation.latitude},${widget.myLocation.longitude}&travelmode=driving&dir_action=navigate";
+            "https://www.google.com/maps/dir/?api=1&origin=${widget.myLocation.latitude},${widget.myLocation.longitude}&destination=${widget.attraction.geolocationData.latitude},${widget.attraction.geolocationData.longitude}&travelmode=transit&dir_action=navigate";
         _launchURL(url);
         break;
       default:
